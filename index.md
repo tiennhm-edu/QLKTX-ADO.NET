@@ -1,4 +1,5 @@
 # ỨNG DỤNG QUẢN LÝ KÝ TÚC XÁ 
 
 ## Contact:
-- Email: ngotienhoang09@gmail.com
+- Email: [tiennhm.it@gmail.com](mailto:tiennhm.it@gmail.com)
+- Facebook: [Minh Tiến](https://www.facebook.com/tiennhm.it/)
