@@ -63,6 +63,11 @@ namespace QLKTX.BS
 
         public bool Delete(TableName tableName, string strKey, ref string error)
         {
+            if (tableName == TableName.NhanVien && !Session.IsAdmin)
+            {
+                error = NoPermissionMessage;
+                return false;
+            }
             string strTableName = tableName.ToString();
             string key = "";
             switch (tableName)

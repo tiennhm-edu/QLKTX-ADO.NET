@@ -25,8 +25,12 @@ namespace QLKTX.UI
         {
             InitializeComponent();
             var dt = FrmMain.bS_Layer.Select(ref error, BS.BS_layer.TableName.NhanVien, EnumConst.NhanVien.MaNV, maNV);
-            if (dt != null)
+            // Select() uses LIKE '%maNV%', so keep only the exact match (e.g. NV1 must not open NV10).
+            DataRow[] match = dt == null ? new DataRow[0]
+                : dt.AsEnumerable().Where(r => string.Equals(r["MaNV"].ToString().Trim(), maNV.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (match.Length == 1)
             {
+                dt = match.CopyToDataTable();
                 txtMaNV.Text = dt.Rows[0]["MaNV"].ToString();
                 txtMaNQL.Text = dt.Rows[0]["MaNQL"].ToString();
                 txtHoTen.Text = dt.Rows[0]["HoTen"].ToString();
@@ -47,12 +51,24 @@ namespace QLKTX.UI
             }
             pnContainer.Enabled = false;
             btnChoose.Enabled = false;
+
+            // MaNV is the key used by the UPDATE, so it is never editable here.
+            txtMaNV.ReadOnly = true;
+
+            // Admins can edit everyone; an employee can edit only their own record (BS_layer checks this again).
+            bool canEdit = Session.IsAdmin || Session.IsCurrentUser(txtMaNV.Text);
+            btnSua.Enabled = canEdit;
+            btnLuu.Enabled = canEdit;
         }
 
         private void btnSua_Click(object sender, EventArgs e)
         {
             pnContainer.Enabled = true;
             btnChoose.Enabled = true;
+
+            // Only admins can change salary and manager.
+            txtLuong.ReadOnly = !Session.IsAdmin;
+            txtMaNQL.ReadOnly = !Session.IsAdmin;
         }
 
         private void btnLuu_Click(object sender, EventArgs e)
