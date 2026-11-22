@@ -10,6 +10,23 @@ Các thành viên:
 - Với số lượng sinh viên lớn, số phòng ở và số hóa đơn cần quản lý tương ứng cũng rất lớn, thực tế cho thấy việc ứng dụng công nghệ thông tin vào quản lý ký túc xá là một nhu cầu tất yếu, hiển nhiên.
 - Nắm bắt được xu hướng trên, ứng dụng Quản lý kí túc xá với mục tiêu hướng đến sự đơn giản, tiện dụng, dễ cài đặt và thao tác cho người sử dụng. Đồng thời nhấn mạnh tính hiện đại, tinh tế trong việc trải nghiệm người dùng, trên hết là những tính năng cần thiết nhất của công việc quản lý.
 - Đối tượng người dùng hướng đến là nhà quản lý hoặc nhân viên ký túc xá.
+
+## Cài đặt và nâng cấp CSDL
+Từ phiên bản này, mật khẩu trong bảng `DANGNHAP` được lưu dạng băm (PBKDF2-SHA256 có salt) thay vì chữ thường ([#3](https://github.com/tiennhm-edu/QLKTX-ADO.NET/issues/3)), và quyền sửa thông tin nhân viên được kiểm tra ở tầng nghiệp vụ ([#2](https://github.com/tiennhm-edu/QLKTX-ADO.NET/issues/2)).
+
+**Trước khi chạy bản mới, cần làm:**
+1. Sao lưu CSDL `QUANLYKTX`.
+2. Chạy file [`QLKTX/DB/Migrations/001_hash_passwords.sql`](QLKTX/DB/Migrations/001_hash_passwords.sql) trên CSDL để nới cột `MatKhau` từ `VARCHAR(50)` lên `VARCHAR(256)` (chuỗi băm dài khoảng 91 ký tự).
+3. Đăng nhập thử với một CSDL thật:
+   - Mật khẩu cũ vẫn dùng được. Sau lần đăng nhập thành công đầu tiên, mật khẩu của tài khoản đó được tự động đổi sang dạng băm. Kiểm tra bằng câu lệnh:
+     ```sql
+     SELECT TenDN FROM DANGNHAP WHERE MatKhau NOT LIKE '$pbkdf2-sha256$%';
+     ```
+     (danh sách này là các tài khoản chưa đăng nhập lại, nên vẫn còn mật khẩu dạng chữ thường).
+   - Nếu chưa chạy bước 2, ứng dụng vẫn cho đăng nhập nhưng sẽ hiện cảnh báo và mật khẩu vẫn chưa được băm.
+   - Đăng nhập bằng tài khoản nhân viên: không sửa được lương, mã người quản lý, hoặc thông tin của nhân viên khác.
+   - Đăng nhập bằng tài khoản quản trị (nhân viên không có `MaNQL`): sửa được tất cả.
+
 ## Giao diện và chức năng
 ### 1. Màn hình đăng nhập khi khởi động
 Để đảm bảo tính bảo mật cho việc sử dụng, giúp phân cấp quyền người sử dụng, mỗi khi khởi động ứng dụng hoặc kết thúc phiên làm việc, người sử dụng được yêu cầu đăng nhập lại ứng dụng.
