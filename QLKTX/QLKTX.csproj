@@ -102,6 +102,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BS\BL_DangNhap.cs" />
+    <Compile Include="BS\PasswordHasher.cs" />
+    <Compile Include="BS\Session.cs" />
     <Compile Include="BS\BL_DichVu.cs" />
     <Compile Include="BS\BL_HoaDon.cs" />
     <Compile Include="BS\BL_LoaiPhong.cs" />

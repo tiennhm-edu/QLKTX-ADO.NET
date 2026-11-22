@@ -29,9 +29,13 @@ namespace QLKTX.UI
             bool result = dangNhap.Select(txtUserName.Text.Trim(), txtPassword.Text.Trim(), ref MaNV, ref accountType, ref error);
             if (result)
             {
+                if (!string.IsNullOrEmpty(dangNhap.UpgradeWarning))
+                    MessageBox.Show(dangNhap.UpgradeWarning, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 this.Hide();
                 FrmMain main = new FrmMain(MaNV, accountType);
                 main.ShowDialog();
+                Session.End();
                 if (exit == false)
                 {
                     this.Show();
